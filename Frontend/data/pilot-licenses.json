@@ -1,0 +1,7 @@
+[
+  { "licenseNumber":"DGCA-CPL-70011","holderName":"Karan Shah","licenseClass":"Commercial Pilot License (CPL)","hoursOnRecord":340,"status":"Active" },
+  { "licenseNumber":"DGCA-PPL-51204","holderName":"Ritika Bose","licenseClass":"Private Pilot License (PPL)","hoursOnRecord":150,"status":"Active" },
+  { "licenseNumber":"DGCA-ATPL-2291","holderName":"Rohan Verma","licenseClass":"Airline Transport Pilot License (ATPL)","hoursOnRecord":8200,"status":"Active" },
+  { "licenseNumber":"DGCA-CPL-88231","holderName":"Aditya Rao","licenseClass":"Commercial Pilot License (CPL)","hoursOnRecord":410,"status":"Active" },
+  { "licenseNumber":"DGCA-PPL-11190","holderName":"Sameer Qureshi","licenseClass":"Private Pilot License (PPL)","hoursOnRecord":95,"status":"Suspended" }
+]

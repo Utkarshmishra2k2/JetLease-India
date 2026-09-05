@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" width="120" height="120">
+  <rect x="4" y="4" width="112" height="112" rx="10" fill="none" stroke="#8B93A7" stroke-width="1.5" stroke-dasharray="5,4"/>
+  <path d="M60 28 L66 52 L96 62 L96 68 L66 62 L62 82 L74 90 L74 95 L60 91 L46 95 L46 90 L58 82 L54 62 L24 68 L24 62 L54 52 Z"
+        fill="none" stroke="#8B93A7" stroke-width="1.5" stroke-linejoin="round"/>
+  <text x="60" y="108" text-anchor="middle" font-family="monospace" font-size="9" letter-spacing="1" fill="#8B93A7">YOUR IMAGE</text>
+</svg>

@@ -1,0 +1,6 @@
+[
+  { "id":"CRW-01","name":"Sanya Kapoor","role":"Cabin Crew","dutyHours":120,"remainingHours":50,"available":true },
+  { "id":"CRW-02","name":"Devika Rao","role":"Cabin Crew","dutyHours":95,"remainingHours":42,"available":true },
+  { "id":"CRW-03","name":"Farhan Ali","role":"Flight Engineer","dutyHours":140,"remainingHours":36,"available":true },
+  { "id":"CRW-04","name":"Meera Iyer","role":"Cabin Crew","dutyHours":60,"remainingHours":0,"available":false }
+]

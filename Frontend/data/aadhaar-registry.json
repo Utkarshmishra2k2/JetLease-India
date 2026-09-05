@@ -1,0 +1,8 @@
+[
+  { "aadhaarNumber":"123456789012", "holderName":"Demo Customer", "dob":"1990-06-15", "gender":"Male", "status":"Active" },
+  { "aadhaarNumber":"234567890123", "holderName":"Karan Shah", "dob":"1988-03-22", "gender":"Male", "status":"Active" },
+  { "aadhaarNumber":"345678901234", "holderName":"Priya Nair", "dob":"1992-11-08", "gender":"Female", "status":"Active" },
+  { "aadhaarNumber":"456789012345", "holderName":"Arjun Malhotra", "dob":"1985-01-30", "gender":"Male", "status":"Active" },
+  { "aadhaarNumber":"567890123456", "holderName":"Ritika Bose", "dob":"1995-07-19", "gender":"Female", "status":"Active" },
+  { "aadhaarNumber":"678901234567", "holderName":"Sameer Qureshi", "dob":"1979-09-05", "gender":"Male", "status":"Suspended" }
+]

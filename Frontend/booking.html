@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Book a Flight — JetLease India</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<header class="nav" id="siteNav"></header>
+
+<div class="section" style="padding-top:40px;">
+  <div class="container" style="max-width:900px;">
+    <div class="eyebrow">Booking</div>
+    <h2 id="bookingTitle">Reserve your charter</h2>
+    <div class="progress-steps">
+      <div id="bps1" class="done"></div><div id="bps2"></div><div id="bps3"></div><div id="bps4"></div>
+    </div>
+
+    <!-- STEP 1: TRIP + AIRCRAFT -->
+    <div id="step1" class="card">
+      <h3>1 · Trip Details &amp; Aircraft</h3>
+      <div class="form-grid">
+        <div class="field"><label>Booking Type</label>
+          <select id="bkType">
+            <option>Domestic Charter</option><option>Helicopter Charter</option>
+          </select>
+        </div>
+        <div class="field" id="f-bkTripType"><label>Trip Type</label>
+          <select id="bkTripType"><option value="One Way">One Way</option><option value="Round Trip">Round Trip</option></select>
+        </div>
+        <div class="field"><label>Origin</label><select id="bkOrigin"></select></div>
+        <div class="field"><label>Destination</label><select id="bkDestination"></select></div>
+        <div class="field" id="f-bkDate"><label>Departure Date</label><input type="date" id="bkDate"><span class="error-text">Select a valid departure date.</span></div>
+        <div class="field" id="f-bkTime"><label>Departure Time</label><input type="time" id="bkTime"><span class="error-text">Select a departure time.</span></div>
+        <div class="field" id="returnDateField" style="display:none;"><label>Return Date</label><input type="date" id="bkReturnDate"><span class="error-text">Return date cannot be before the departure date.</span></div>
+        <div class="field" id="returnTimeField" style="display:none;"><label>Return Time</label><input type="time" id="bkReturnTime"></div>
+        <div class="field"><label>Passengers</label><input type="number" id="bkPax" min="1" max="19" value="2"></div>
+      </div>
+
+      <h4 style="margin-top:24px;">Choose Aircraft</h4>
+      <div class="fleet-grid" id="bkFleetGrid" style="grid-template-columns:repeat(2,1fr);"></div>
+
+      <details style="margin-top:20px;">
+        <summary style="cursor:pointer;color:var(--accent);font-size:13.5px;">Not sure which aircraft? Get a recommendation →</summary>
+        <div class="form-grid" style="margin-top:14px;">
+          <div class="field"><label>Budget (₹)</label><input type="number" id="recBudget" value="800000"></div>
+          <div class="field"><label>Distance (km) — auto-calculated</label><input type="number" id="recDistance" value="0" readonly style="opacity:.75;"></div>
+          <button type="button" class="btn btn-ghost" style="align-self:end;" onclick="runRecommendation()">Recommend Aircraft</button>
+        </div>
+        <p class="hint" id="recDistanceHint">Select an origin and destination above — distance is calculated automatically from the route.</p>
+        <div id="recResult" style="margin-top:14px;"></div>
+      </details>
+
+      <button class="btn btn-primary btn-block" style="margin-top:24px;" onclick="goStep(2)">Continue to Passengers</button>
+    </div>
+
+    <!-- STEP 2: PASSENGERS -->
+    <div id="step2" class="card" style="display:none;">
+      <h3>2 · Passenger Details</h3>
+      <p id="passengerTypeNote"></p>
+      <div id="passengerList"></div>
+      <button type="button" class="btn btn-ghost btn-sm" onclick="addPassengerRow()">+ Add Passenger</button>
+      <div style="display:flex;gap:12px;margin-top:22px;">
+        <button class="btn btn-ghost btn-block" onclick="goStep(1)">Back</button>
+        <button class="btn btn-primary btn-block" onclick="submitPassengers()">Continue to Flight Crew</button>
+      </div>
+    </div>
+
+    <!-- STEP 3: SELF-FLY / CREW -->
+    <div id="step3" class="card" style="display:none;">
+      <h3>3 · Flight Crew</h3>
+      <label style="display:flex;gap:10px;align-items:center;margin-bottom:18px;">
+        <input type="checkbox" id="selfFlyToggle"> I hold a valid pilot license and want to Self-Fly this aircraft
+      </label>
+
+      <div id="selfFlyPanel" style="display:none;">
+        <div class="form-grid">
+          <div class="field" id="f-flyingHours"><label>Total Flying Hours</label><input type="number" id="flyingHours" min="0"><span class="error-text">Minimum 100 flying hours required. Booking will be rejected below this.</span></div>
+          <div class="field" id="f-licenseNumber">
+            <label>Pilot License Number</label>
+            <div class="otp-row"><input type="text" id="licenseNumber" placeholder="e.g. DGCA-CPL-70011" oninput="bkState.licenseVerified=false;document.getElementById('licenseVerifyStatus').textContent='';clearSelfFlyAutoFill();"><button type="button" class="btn btn-ghost btn-sm" onclick="verifyPilotLicense()">Verify License</button></div>
+            <span class="error-text">License number is required.</span>
+            <div class="hint">Verification is informational only and will not block your booking.</div>
+            <div id="licenseVerifyStatus" class="hint" style="margin-top:6px;"></div>
+          </div>
+          <div class="field" id="f-licenseClass"><label>License Class</label>
+            <select id="licenseClass"><option value="">Select class</option><option>Student Pilot License (SPL)</option><option>Private Pilot License (PPL)</option><option>Commercial Pilot License (CPL)</option><option>Airline Transport Pilot License (ATPL)</option></select>
+            <span class="error-text">Select a license class.</span>
+          </div>
+          <div class="field" id="f-certificate"><label>Certificate Upload</label><input type="file" id="certificateFile"><span class="error-text">Certificate upload is required.</span></div>
+        </div>
+        <div id="selfFlyAutoFillNote" class="hint" style="display:none;margin-top:10px;color:var(--green);">
+          Flying hours and license class were auto-filled from the DGCA registry record.
+          <button type="button" class="btn btn-ghost btn-sm" style="margin-left:8px;" onclick="clearSelfFlyAutoFill()">Clear &amp; Edit Manually</button>
+        </div>
+        <label style="display:flex;gap:10px;align-items:center;margin-top:14px;font-size:13.5px;color:var(--text-dim);">
+          <input type="checkbox" id="dgcaDeclaration"> I declare the above is accurate under DGCA self-fly regulations, and a certified safety pilot will remain aboard.
+        </label>
+        <div id="selfFlyError" style="display:none;background:color-mix(in srgb, var(--red) 12%, transparent);border:1px solid var(--red);border-radius:8px;padding:12px 14px;margin-top:14px;color:var(--red);font-size:13.5px;"></div>
+      </div>
+
+      <div style="display:flex;gap:12px;margin-top:22px;">
+        <button class="btn btn-ghost btn-block" onclick="goStep(2)">Back</button>
+        <button class="btn btn-primary btn-block" onclick="submitCrewStep()">Continue to Cost Review</button>
+      </div>
+    </div>
+
+    <!-- STEP 4: COST REVIEW -->
+    <div id="step4" class="card" style="display:none;">
+      <h3>4 · Cost Breakdown</h3>
+      <div class="strip">
+        <div class="strip-top">
+          <div><div class="strip-code" id="reviewRoute">—</div><h3 id="reviewAircraft" style="margin:4px 0 0;">—</h3></div>
+          <div style="text-align:right;"><div class="strip-code" id="reviewDate">—</div><div class="strip-code" id="reviewType">—</div></div>
+        </div>
+        <div class="strip-body">
+          <div id="costLines"></div>
+          <div class="ticks" id="ticksRow"></div>
+        </div>
+        <div class="notch-r"></div>
+      </div>
+      <div id="bookingErrorBox" style="display:none;background:color-mix(in srgb, var(--red) 12%, transparent);border:1px solid var(--red);border-radius:8px;padding:12px 14px;margin-top:16px;color:var(--red);font-size:13.5px;"></div>
+      <div style="display:flex;gap:12px;margin-top:22px;">
+        <button class="btn btn-ghost btn-block" onclick="goStep(3)">Back</button>
+        <button class="btn btn-primary btn-block" id="confirmBookingBtn" onclick="confirmBooking()">Confirm Booking &amp; Proceed to Payment</button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<footer class="site-footer" id="siteFooter"></footer>
+<script src="js/data.js"></script>
+<script src="js/app.js"></script>
+<script src="js/booking.js"></script>
+</body>
+</html>

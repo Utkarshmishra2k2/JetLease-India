@@ -1,0 +1,12 @@
+{
+  "domestic":[
+    {"code":"BOM","city":"Mumbai","lat":19.0896,"lng":72.8656},
+    {"code":"DEL","city":"Delhi","lat":28.5562,"lng":77.1000},
+    {"code":"BLR","city":"Bangalore","lat":13.1986,"lng":77.7066},
+    {"code":"HYD","city":"Hyderabad","lat":17.2403,"lng":78.4294},
+    {"code":"MAA","city":"Chennai","lat":12.9941,"lng":80.1709},
+    {"code":"GOI","city":"Goa","lat":15.3808,"lng":73.8314},
+    {"code":"AMD","city":"Ahmedabad","lat":23.0772,"lng":72.6347},
+    {"code":"PNQ","city":"Pune","lat":18.5822,"lng":73.9197}
+  ]
+}

@@ -1,0 +1,8 @@
+[
+  { "name":"India","callingCode":"+91","serviceAvailable":true },
+  { "name":"United Arab Emirates","callingCode":"+971","serviceAvailable":true },
+  { "name":"Singapore","callingCode":"+65","serviceAvailable":true },
+  { "name":"United Kingdom","callingCode":"+44","serviceAvailable":true },
+  { "name":"United States","callingCode":"+1","serviceAvailable":true },
+  { "name":"Other","callingCode":"","serviceAvailable":false }
+]

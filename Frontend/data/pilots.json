@@ -1,0 +1,6 @@
+[
+  { "id":"PLT-01","name":"Capt. Rohan Verma","licenseNumber":"DGCA-ATPL-2291","flyingHours":8200,"remainingHours":60,"typeRatings":["G650-TR","GL7500-TR"],"certifications":["ATPL","CAT-II"],"available":true },
+  { "id":"PLT-02","name":"Capt. Neha Kulkarni","licenseNumber":"DGCA-ATPL-3387","flyingHours":6100,"remainingHours":45,"typeRatings":["CH350-TR","CLAT-TR"],"certifications":["ATPL"],"available":true },
+  { "id":"PLT-03","name":"Capt. Imran Sheikh","licenseNumber":"DGCA-ATPL-4410","flyingHours":5400,"remainingHours":38,"typeRatings":["AW139-TR","B429-TR"],"certifications":["ATPL","Helicopter Rating"],"available":true },
+  { "id":"PLT-04","name":"Capt. Leela Menon","licenseNumber":"DGCA-ATPL-5522","flyingHours":9100,"remainingHours":0,"typeRatings":["CJ3-TR","PH300-TR"],"certifications":["ATPL"],"available":false }
+]

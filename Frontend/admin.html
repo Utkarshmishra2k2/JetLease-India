@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin Console — JetLease India</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<header class="nav" id="siteNav"></header>
+
+<div class="dash-shell">
+  <aside class="dash-side" id="adminSide">
+    <a href="#overview" data-tab="overview" class="active">Overview</a>
+    <a href="#aircraft" data-tab="aircraft">Aircraft</a>
+    <a href="#bookings" data-tab="bookings">Bookings</a>
+    <a href="#payments" data-tab="payments">Payments</a>
+    <a href="#leases" data-tab="leases">Leases</a>
+    <a href="#customers" data-tab="customers">Customers</a>
+    <a href="#crew" data-tab="crew">Crew &amp; Pilots</a>
+    <a href="#routes" data-tab="routes">Routes</a>
+    <a href="#inbox" data-tab="inbox">Inbox</a>
+    <a href="#exports" data-tab="exports">Exports</a>
+    <a href="#audit" data-tab="audit">Audit Log</a>
+  </aside>
+  <main class="dash-main">
+    <h2 id="adminGreeting">Admin Console</h2>
+    <div class="kpi-grid" id="adminKpiGrid"></div>
+    <div id="adminPanels"></div>
+  </main>
+</div>
+
+<div id="adminModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);align-items:center;justify-content:center;z-index:200;padding:20px;">
+  <div class="card" style="max-width:560px;width:100%;max-height:86vh;overflow-y:auto;" id="adminModalBody"></div>
+</div>
+
+<footer class="site-footer" id="siteFooter"></footer>
+<script src="js/data.js"></script>
+<script src="js/app.js"></script>
+<script src="js/admin.js"></script>
+</body>
+</html>

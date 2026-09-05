@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lease Agreements — JetLease India</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<header class="nav" id="siteNav"></header>
+
+<div class="section" style="padding-top:40px;">
+  <div class="container" style="max-width:760px;">
+    <div class="eyebrow">Lease Desk</div>
+    <h2>Your lease agreements</h2>
+    <div id="leaseList"></div>
+  </div>
+</div>
+
+<div id="leaseModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);align-items:center;justify-content:center;z-index:200;padding:20px;">
+  <div class="card" style="max-width:640px;width:100%;max-height:86vh;overflow-y:auto;">
+    <div id="leaseModalBody"></div>
+    <button class="btn btn-ghost btn-block" style="margin-top:16px;" onclick="document.getElementById('leaseModal').style.display='none'">Close</button>
+  </div>
+</div>
+
+<footer class="site-footer" id="siteFooter"></footer>
+<script src="js/data.js"></script>
+<script src="js/app.js"></script>
+<script src="js/lease.js"></script>
+</body>
+</html>

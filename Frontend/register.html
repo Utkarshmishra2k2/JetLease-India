@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Register — JetLease India</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<header class="nav" id="siteNav"></header>
+
+<div class="auth-wrap">
+  <div class="auth-card wide card fade-in">
+    <div class="eyebrow">Step <span id="stepLabel">1</span> of 3</div>
+    <h2 id="formTitle">Create your JetLease account</h2>
+    <div class="progress-steps"><div id="ps1" class="done"></div><div id="ps2"></div><div id="ps3"></div></div>
+
+    <!-- STEP 1: DETAILS -->
+    <form id="detailsForm">
+      <div class="form-grid">
+        <div class="field" id="f-fullName"><label>Full Name</label><input type="text" id="fullName" required><span class="error-text">Only letters are allowed.</span></div>
+        <div class="field" id="f-email"><label>Email</label><input type="email" id="email" required><span class="error-text">Enter a valid email address.</span></div>
+        <div class="field" id="f-phone">
+          <label>Phone</label>
+          <input type="tel" id="phone" pattern="[0-9]{10}" placeholder="10-digit mobile" required>
+          <span class="error-text">Enter a valid 10-digit phone number.</span>
+        </div>
+        <div class="field" id="f-dob"><label>Date of Birth</label><input type="date" id="dob" required><span class="error-text">You must be 18 or older.</span></div>
+        <div class="field" id="f-emergency"><label>Emergency Contact</label><input type="tel" id="emergencyContact" pattern="[0-9]{10}" placeholder="10-digit mobile" required><span class="error-text">Enter a valid 10-digit contact number.</span></div>
+        <div class="field full" id="f-password">
+          <label>Password</label>
+          <div class="otp-row">
+            <input type="password" id="password" required>
+            <button type="button" class="btn btn-ghost btn-sm" onclick="togglePasswordVisibility('password', this)">Show</button>
+          </div>
+          <div class="strength-meter"><span id="strengthBar"></span></div>
+          <div class="hint" id="strengthLabel">Use 8+ characters with upper, lower, number &amp; symbol.</div>
+        </div>
+        <div class="field full" id="f-confirm">
+          <label>Confirm Password</label>
+          <div class="otp-row">
+            <input type="password" id="confirmPassword" required>
+            <button type="button" class="btn btn-ghost btn-sm" onclick="togglePasswordVisibility('confirmPassword', this)">Show</button>
+          </div>
+          <span class="error-text">Passwords do not match.</span>
+        </div>
+      </div>
+      <button class="btn btn-primary btn-block" type="submit" style="margin-top:20px;">Continue to Verification</button>
+    </form>
+
+    <!-- STEP 2: OTP -->
+    <form id="otpForm" style="display:none;">
+      <p>We've sent mock one-time codes to verify your details. Enter <b>123456</b> for both (demo mode).</p>
+      <div class="field" style="margin-bottom:16px;">
+        <label>Email OTP</label>
+        <div class="otp-row"><input type="text" maxlength="6" id="emailOtp" placeholder="6-digit code"><button type="button" class="btn btn-ghost btn-sm" id="resendEmail">Resend</button></div>
+        <span class="error-text" id="emailOtpErr">Incorrect code.</span>
+      </div>
+      <div class="field">
+        <label>Phone OTP</label>
+        <div class="otp-row"><input type="text" maxlength="6" id="phoneOtp" placeholder="6-digit code"><button type="button" class="btn btn-ghost btn-sm" id="resendPhone">Resend</button></div>
+        <span class="error-text" id="phoneOtpErr">Incorrect code.</span>
+      </div>
+      <button class="btn btn-primary btn-block" type="submit" style="margin-top:20px;">Verify &amp; Create Account</button>
+    </form>
+
+    <!-- STEP 3: DONE -->
+    <div id="doneStep" style="display:none;text-align:center;padding:20px 0;">
+      <img src="assets/images/placeholder-icon.svg" alt="" style="width:44px;height:44px;margin:0 auto;">
+      <h3>Account created</h3>
+      <p>Welcome to JetLease India. Head to your dashboard to book your first flight.</p>
+      <a href="dashboard.html" class="btn btn-primary btn-block">Go to Dashboard</a>
+    </div>
+
+    <p style="margin-top:18px;text-align:center;font-size:14px;">Already registered? <a href="login.html" style="color:var(--accent);">Log in</a></p>
+  </div>
+</div>
+
+<footer class="site-footer" id="siteFooter"></footer>
+<script src="js/data.js"></script>
+<script src="js/app.js"></script>
+<script src="js/auth.js"></script>
+</body>
+</html>
