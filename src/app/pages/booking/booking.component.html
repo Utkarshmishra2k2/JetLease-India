@@ -1,0 +1,261 @@
+<div class="section" style="padding-top:40px;">
+  <div class="container" style="max-width:900px;">
+    <div class="eyebrow">Booking</div>
+    <h2>Reserve your charter</h2>
+    <div class="progress-steps">
+      <div [class.done]="step >= 1"></div><div [class.done]="step >= 2"></div><div [class.done]="step >= 3"></div><div [class.done]="step >= 4"></div>
+    </div>
+
+    <!-- STEP 1: TRIP + AIRCRAFT -->
+    <div class="card" *ngIf="step === 1">
+      <h3>1 &middot; Trip Details &amp; Aircraft</h3>
+      <div class="form-grid">
+        <div class="field">
+          <label>Booking Type</label>
+          <select [(ngModel)]="type" (ngModelChange)="onTypeChange()">
+            <option>Domestic Charter</option><option>Helicopter Charter</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Trip Type</label>
+          <select [(ngModel)]="tripType" (ngModelChange)="onTripTypeChange()">
+            <option value="One Way">One Way</option><option value="Round Trip">Round Trip</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Origin</label>
+          <select [(ngModel)]="origin" (ngModelChange)="updateRecommendationDistance()">
+            <option *ngFor="let r of routes" [value]="r.code">{{ r.city }} ({{ r.code }})</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Destination</label>
+          <select [(ngModel)]="destination" (ngModelChange)="updateRecommendationDistance()">
+            <option *ngFor="let r of routes" [value]="r.code">{{ r.city }} ({{ r.code }})</option>
+          </select>
+        </div>
+        <div class="field" [ngClass]="fieldClass('bkDate')">
+          <label>Departure Date</label>
+          <input type="date" [(ngModel)]="date" [min]="today" (ngModelChange)="syncReturnDateMin()">
+          <span class="error-text">{{ errors['bkDate'] }}</span>
+        </div>
+        <div class="field" [ngClass]="fieldClass('bkTime')">
+          <label>Departure Time</label>
+          <input type="time" [(ngModel)]="time">
+          <span class="error-text">{{ errors['bkTime'] }}</span>
+        </div>
+        <div class="field" [ngClass]="fieldClass('returnDate')" *ngIf="tripType === 'Round Trip'">
+          <label>Return Date</label>
+          <input type="date" [(ngModel)]="returnDate" [min]="returnDateMin">
+          <span class="error-text">{{ errors['returnDate'] }}</span>
+        </div>
+        <div class="field" *ngIf="tripType === 'Round Trip'">
+          <label>Return Time</label>
+          <input type="time" [(ngModel)]="returnTime">
+        </div>
+        <div class="field" [ngClass]="fieldClass('bkPax')">
+          <label>Passengers</label>
+          <input type="number" [(ngModel)]="pax" min="1" max="14">
+          <span class="error-text">{{ errors['bkPax'] }}</span>
+        </div>
+      </div>
+
+      <h4 style="margin-top:24px;">Choose Aircraft</h4>
+      <div class="fleet-grid" style="grid-template-columns:repeat(2,1fr);">
+        <div class="aircraft-card" *ngFor="let a of filteredFleet" style="cursor:pointer;" [style.borderColor]="aircraftId === a.id ? 'var(--accent)' : 'var(--border)'" (click)="selectAircraft(a.id)">
+          <div class="aircraft-media"><img src="assets/images/01.jpg" [alt]="a.model" style="height:170px;width:100%;opacity:.75;"></div>
+          <div class="aircraft-body">
+            <h3 style="margin-bottom:2px;">{{ a.model }}</h3>
+            <p style="margin:0;font-family:var(--mono);font-size:12px;">{{ a.reg }} &middot; {{ a.capacity }} seats</p>
+            <div class="price-row"><span style="font-size:12px;color:var(--text-dim);">per hour</span><b>{{ fmtINR(a.hourlyRate) }}</b></div>
+          </div>
+        </div>
+        <div class="empty-state" *ngIf="filteredFleet.length === 0">No aircraft currently available in this category.</div>
+      </div>
+
+      <details style="margin-top:20px;">
+        <summary style="cursor:pointer;color:var(--accent);font-size:13.5px;">Not sure which aircraft? Get a recommendation &rarr;</summary>
+        <div class="form-grid" style="margin-top:14px;">
+          <div class="field"><label>Budget (&#8377;)</label><input type="number" [(ngModel)]="recBudget"></div>
+          <div class="field"><label>Distance (km) &mdash; auto-calculated</label><input type="number" [ngModel]="recDistanceKm" readonly style="opacity:.75;"></div>
+          <button type="button" class="btn btn-ghost" style="align-self:end;" (click)="runRecommendation()">Recommend Aircraft</button>
+        </div>
+        <p class="hint">{{ recDistanceHint }}</p>
+        <div style="margin-top:14px;" *ngIf="recResult?.best as best">
+          <div class="strip">
+            <div class="strip-top">
+              <div><div class="strip-code">Recommended</div><h3 style="margin:4px 0 0;">{{ best.model }}</h3></div>
+              <div style="text-align:right;"><div class="strip-code">Est. {{ fmtINR(best.estCost) }}</div></div>
+            </div>
+            <div class="strip-body">
+              <p style="margin:0;">Seats {{ best.capacity }} &middot; Range {{ best.range | number }} km</p>
+              <button class="btn btn-primary btn-sm" style="margin-top:12px;" (click)="pickRecommended(best.id)">Select This Aircraft</button>
+            </div>
+          </div>
+          <p class="hint" style="margin-top:10px;" *ngIf="recResult && recResult.alternatives.length">Alternatives: {{ recResult.alternatives | slice:0:3 | json }}</p>
+        </div>
+      </details>
+
+      <button class="btn btn-primary btn-block" style="margin-top:24px;" (click)="goStep(2)">Continue to Passengers</button>
+    </div>
+
+    <!-- STEP 2: PASSENGERS -->
+    <div class="card" *ngIf="step === 2">
+      <h3>2 &middot; Passenger Details</h3>
+      <p>Aadhaar details are required for mock verification, except for children under 5 years and 15 days old. If a passenger does not have an Aadhaar card, check the box below their details to enter an alternate ID instead.</p>
+
+      <div class="panel" *ngFor="let p of passengers; let i = index">
+        <div class="panel-head">
+          <h4 style="margin:0;">Passenger {{ i + 1 }}</h4>
+          <button type="button" class="btn btn-ghost btn-sm" *ngIf="i > 0" (click)="removePassengerRow(i)">Remove</button>
+        </div>
+        <div class="hint" style="color:var(--green);margin-bottom:10px;" *ngIf="p.aadhaarAutoFilled">
+          Name, date of birth &amp; gender were auto-filled from the matched Aadhaar record.
+          <button type="button" class="btn btn-ghost btn-sm" style="margin-left:8px;" (click)="clearAadhaarAutoFill(i)">Clear &amp; Edit Manually</button>
+        </div>
+        <div class="form-grid">
+          <div class="field" [ngClass]="fieldClass('pax-name-' + i)">
+            <label>Full Name</label>
+            <input type="text" [(ngModel)]="p.name" [disabled]="p.aadhaarAutoFilled">
+            <span class="error-text">{{ errors['pax-name-' + i] }}</span>
+          </div>
+          <div class="field" [ngClass]="fieldClass('pax-dob-' + i)">
+            <label>Date of Birth</label>
+            <input type="date" [(ngModel)]="p.dob" [min]="dobMin" [max]="dobMax" [disabled]="p.aadhaarAutoFilled">
+            <span class="error-text">{{ errors['pax-dob-' + i] }}</span>
+          </div>
+          <div class="field">
+            <label>Gender</label>
+            <select [(ngModel)]="p.gender" [disabled]="p.aadhaarAutoFilled">
+              <option>Male</option><option>Female</option><option>Other</option>
+            </select>
+          </div>
+
+          <ng-container *ngIf="p.noAadhaar; else aadhaarField">
+            <div class="field full">
+              <label>Government Issued ID Number</label>
+              <input type="text" [(ngModel)]="p.altDocumentId" placeholder="e.g. Passport, Voter ID, Driving License number">
+              <div class="hint">Please carry this ID while boarding.</div>
+            </div>
+          </ng-container>
+          <ng-template #aadhaarField>
+            <div class="field" [ngClass]="fieldClass('pax-aadhaar-' + i)">
+              <label>Aadhaar Number <span class="hint" style="display:inline;" *ngIf="isExempt(p)">(optional &mdash; under 5y 15d)</span></label>
+              <input type="text" maxlength="12" [(ngModel)]="p.aadhaar" (ngModelChange)="onAadhaarInput(i)" [placeholder]="isExempt(p) ? 'Not required for this age' : ''">
+              <span class="error-text">{{ errors['pax-aadhaar-' + i] }}</span>
+            </div>
+          </ng-template>
+        </div>
+
+        <div class="field full">
+          <label style="display:flex;justify-content:flex-start;text-align:left;gap:8px;align-items:center;margin-top:10px;">
+            <input style="width:auto" type="checkbox" [ngModel]="p.noAadhaar" (ngModelChange)="onNoAadhaarToggle(i, $event)">
+            <span>This passenger does not have an Aadhaar card</span>
+          </label>
+        </div>
+
+        <div style="margin-top:12px;display:flex;align-items:center;gap:12px;flex-wrap:wrap;">
+          <ng-container *ngIf="p.noAadhaar; else verifyRow">
+            <span class="badge-status" [ngClass]="statusClass('Not Applicable')">Not Applicable</span>
+          </ng-container>
+          <ng-template #verifyRow>
+            <span class="badge-status" [ngClass]="statusClass(p.verificationStatus)">{{ p.verificationStatus }}</span>
+            <button type="button" class="btn btn-ghost btn-sm" (click)="verifyPassenger(i)">Run Mock Verification</button>
+          </ng-template>
+        </div>
+      </div>
+
+      <button type="button" class="btn btn-ghost btn-sm" (click)="addPassengerRow()">+ Add Passenger</button>
+      <div style="display:flex;gap:12px;margin-top:22px;">
+        <button class="btn btn-ghost btn-block" (click)="goStep(1)">Back</button>
+        <button class="btn btn-primary btn-block" (click)="submitPassengers()">Continue to Flight Crew</button>
+      </div>
+    </div>
+
+    <!-- STEP 3: SELF-FLY / CREW -->
+    <div class="card" *ngIf="step === 3">
+      <h3>3 &middot; Flight Crew</h3>
+      <label style="display:flex;gap:10px;align-items:center;margin-bottom:18px;">
+        <input type="checkbox" [ngModel]="selfFly" (ngModelChange)="onSelfFlyToggle($event)"> I hold a valid pilot license and want to Self-Fly this aircraft
+      </label>
+
+      <div *ngIf="selfFly">
+        <div class="form-grid">
+          <div class="field" [ngClass]="fieldClass('flyingHours')">
+            <label>Total Flying Hours</label>
+            <input type="number" [(ngModel)]="flyingHours" min="0" [readonly]="flyingHoursReadonly">
+            <span class="error-text">Minimum 100 flying hours required. Booking will be rejected below this.</span>
+          </div>
+          <div class="field" [ngClass]="fieldClass('licenseNumber')">
+            <label>Pilot License Number</label>
+            <div class="otp-row">
+              <input type="text" [(ngModel)]="licenseNumber" placeholder="e.g. DGCA-CPL-70011" (ngModelChange)="onLicenseNumberInput()">
+              <button type="button" class="btn btn-ghost btn-sm" (click)="verifyPilotLicense()">Verify License</button>
+            </div>
+            <span class="error-text">{{ errors['licenseNumber'] }}</span>
+            <div class="hint">Verification is informational only and will not block your booking.</div>
+            <div class="hint" style="margin-top:6px;" [style.color]="licenseVerifyOk ? 'var(--green)' : 'var(--red)'">{{ licenseVerifyStatus }}</div>
+          </div>
+          <div class="field">
+            <label>License Class</label>
+            <select [(ngModel)]="licenseClass" [disabled]="licenseClassDisabled">
+              <option value="">Select class</option>
+              <option>Student Pilot License (SPL)</option><option>Private Pilot License (PPL)</option><option>Commercial Pilot License (CPL)</option><option>Airline Transport Pilot License (ATPL)</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>Certificate Upload</label>
+            <input type="file" (change)="onCertificateFileChange($event)">
+          </div>
+        </div>
+        <div class="hint" style="margin-top:10px;color:var(--green);" *ngIf="autoFilledFromRegistry">
+          Flying hours and license class were auto-filled from the DGCA registry record.
+          <button type="button" class="btn btn-ghost btn-sm" style="margin-left:8px;" (click)="clearSelfFlyAutoFill()">Clear &amp; Edit Manually</button>
+        </div>
+        <label style="display:flex;gap:10px;align-items:center;margin-top:14px;font-size:13.5px;color:var(--text-dim);">
+          <input type="checkbox" [(ngModel)]="dgcaDeclaration"> I declare the above is accurate under DGCA self-fly regulations, and a certified safety pilot will remain aboard.
+        </label>
+        <div *ngIf="selfFlyErrors.length" style="background:color-mix(in srgb, var(--red) 12%, transparent);border:1px solid var(--red);border-radius:8px;padding:12px 14px;margin-top:14px;color:var(--red);font-size:13.5px;">
+          <b>Self-Fly booking rejected:</b><br>
+          <ng-container *ngFor="let e of selfFlyErrors">&bull; {{ e }}<br></ng-container>
+        </div>
+      </div>
+
+      <div style="display:flex;gap:12px;margin-top:22px;">
+        <button class="btn btn-ghost btn-block" (click)="goStep(2)">Back</button>
+        <button class="btn btn-primary btn-block" (click)="submitCrewStep()">Continue to Cost Review</button>
+      </div>
+    </div>
+
+    <!-- STEP 4: COST REVIEW -->
+    <div class="card" *ngIf="step === 4">
+      <h3>4 &middot; Cost Breakdown</h3>
+      <div class="strip">
+        <div class="strip-top">
+          <div><div class="strip-code">{{ origin }} &rarr; {{ destination }}{{ tripType === 'Round Trip' ? ' \u2192 ' + origin : '' }}</div><h3 style="margin:4px 0 0;">{{ selectedAircraft?.model }}</h3></div>
+          <div style="text-align:right;"><div class="strip-code">{{ date }} {{ time }}</div><div class="strip-code">{{ type }}{{ selfFly ? ' \u00b7 Self-Fly' : '' }}</div></div>
+        </div>
+        <div class="strip-body">
+          <div>
+            <div class="cost-line"><span>Aircraft Cost</span><span>{{ fmtINR(cost.aircraftCost) }}</span></div>
+            <div class="cost-line"><span>{{ selfFly ? 'Safety Pilot Cost' : 'Pilot Cost' }}</span><span>{{ fmtINR(cost.pilotCost) }}</span></div>
+            <div class="cost-line"><span>Crew Cost</span><span>{{ fmtINR(cost.crewCost) }}</span></div>
+            <div class="cost-line"><span>Airport Charges</span><span>{{ fmtINR(cost.airportCharges) }}</span></div>
+            <div class="cost-line"><span>Fuel Surcharge (8%)</span><span>{{ fmtINR(cost.fuelSurcharge) }}</span></div>
+            <div class="cost-line"><span>GST (5%)</span><span>{{ fmtINR(cost.gst) }}</span></div>
+            <div class="cost-line total"><span>Total Payable</span><span>{{ fmtINR(cost.total) }}</span></div>
+          </div>
+          <div class="ticks"><span *ngFor="let t of [].constructor(40)"></span></div>
+        </div>
+        <div class="notch-r"></div>
+      </div>
+      <div *ngIf="bookingErrors.length" style="background:color-mix(in srgb, var(--red) 12%, transparent);border:1px solid var(--red);border-radius:8px;padding:12px 14px;margin-top:16px;color:var(--red);font-size:13.5px;">
+        <ng-container *ngFor="let e of bookingErrors">{{ e }}<br></ng-container>
+      </div>
+      <div style="display:flex;gap:12px;margin-top:22px;">
+        <button class="btn btn-ghost btn-block" (click)="goStep(3)">Back</button>
+        <button class="btn btn-primary btn-block" [disabled]="submitting" (click)="confirmBooking()">Confirm Booking &amp; Proceed to Payment</button>
+      </div>
+    </div>
+  </div>
+</div>

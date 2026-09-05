@@ -1,0 +1,96 @@
+<div class="auth-wrap">
+  <div class="auth-card wide card fade-in">
+    <div class="eyebrow">Step {{ step() }} of 3</div>
+    <h2>{{ step() === 1 ? 'Create your JetLease account' : step() === 2 ? 'Verify your contact details' : "You're all set" }}</h2>
+    <div class="progress-steps">
+      <div [class.done]="step() >= 1"></div>
+      <div [class.done]="step() >= 2"></div>
+      <div [class.done]="step() >= 3"></div>
+    </div>
+
+    <!-- STEP 1: DETAILS -->
+    <form *ngIf="step() === 1" (ngSubmit)="submitDetails()">
+      <div class="form-grid">
+        <div class="field" [ngClass]="fieldClass('fullName')">
+          <label>Full Name</label>
+          <input type="text" [(ngModel)]="fullName" name="fullName" required>
+          <span class="error-text">{{ errors['fullName'] }}</span>
+        </div>
+        <div class="field" [ngClass]="fieldClass('email')">
+          <label>Email</label>
+          <input type="email" [(ngModel)]="email" name="email" required>
+          <span class="error-text">{{ errors['email'] }}</span>
+        </div>
+        <div class="field" [ngClass]="fieldClass('country')">
+          <label>Country</label>
+          <select [(ngModel)]="country" name="country" required>
+            <option value="">Select country</option>
+            <option>India</option><option>United Arab Emirates</option><option>Singapore</option><option>United Kingdom</option><option>United States</option><option>Other</option>
+          </select>
+          <span class="error-text">{{ errors['country'] }}</span>
+        </div>
+        <div class="field" [ngClass]="fieldClass('phone')">
+          <label>Phone</label>
+          <div class="otp-row">
+            <input type="tel" [(ngModel)]="phone" name="phone" pattern="[0-9]{10}" placeholder="10-digit mobile" required>
+          </div>
+          <span class="error-text">{{ errors['phone'] }}</span>
+        </div>
+        <div class="field" [ngClass]="fieldClass('dob')">
+          <label>Date of Birth</label>
+          <input type="date" [(ngModel)]="dob" name="dob" [max]="today" required>
+          <span class="error-text">{{ errors['dob'] }}</span>
+        </div>
+        <div class="field" [ngClass]="fieldClass('emergency')">
+          <label>Emergency Contact</label>
+          <input type="tel" [(ngModel)]="emergencyContact" name="emergencyContact" pattern="[0-9]{10}" placeholder="10-digit mobile" required>
+          <span class="error-text">{{ errors['emergency'] }}</span>
+        </div>
+        <div class="field full" [ngClass]="fieldClass('password')">
+          <label>Password</label>
+          <input type="password" [(ngModel)]="password" name="password" (input)="onPasswordInput()" required>
+          <div class="strength-meter"><span [style.width.%]="strengthPct" [style.background]="strengthColor"></span></div>
+          <div class="hint">{{ strengthLabel }}</div>
+          <span class="error-text">{{ errors['password'] }}</span>
+        </div>
+        <div class="field full" [ngClass]="fieldClass('confirm')">
+          <label>Confirm Password</label>
+          <input type="password" [(ngModel)]="confirmPassword" name="confirmPassword" required>
+          <span class="error-text">{{ errors['confirm'] }}</span>
+        </div>
+      </div>
+      <button class="btn btn-primary btn-block" type="submit" style="margin-top:20px;">Continue to Verification</button>
+    </form>
+
+    <!-- STEP 2: OTP -->
+    <form *ngIf="step() === 2" (ngSubmit)="submitOtp()">
+      <p>We've sent mock one-time codes to verify your details. Enter <b>123456</b> for both (demo mode).</p>
+      <div class="field" style="margin-bottom:16px;">
+        <label>Email OTP</label>
+        <div class="otp-row">
+          <input type="text" maxlength="6" [(ngModel)]="emailOtp" name="emailOtp" placeholder="6-digit code">
+          <button type="button" class="btn btn-ghost btn-sm" (click)="resendEmail()">Resend</button>
+        </div>
+        <span class="error-text" [style.display]="emailOtpErr ? 'block' : 'none'">Incorrect code.</span>
+      </div>
+      <div class="field">
+        <label>Phone OTP</label>
+        <div class="otp-row">
+          <input type="text" maxlength="6" [(ngModel)]="phoneOtp" name="phoneOtp" placeholder="6-digit code">
+          <button type="button" class="btn btn-ghost btn-sm" (click)="resendPhone()">Resend</button>
+        </div>
+        <span class="error-text" [style.display]="phoneOtpErr ? 'block' : 'none'">Incorrect code.</span>
+      </div>
+      <button class="btn btn-primary btn-block" type="submit" style="margin-top:20px;" [disabled]="loading()">Verify &amp; Create Account</button>
+    </form>
+
+    <!-- STEP 3: DONE -->
+    <div *ngIf="step() === 3" style="text-align:center;padding:20px 0;">
+      <h3>Account created</h3>
+      <p>Welcome to JetLease India. Head to your dashboard to book your first flight.</p>
+      <a routerLink="/dashboard" class="btn btn-primary btn-block">Go to Dashboard</a>
+    </div>
+
+    <p *ngIf="step() !== 3" style="margin-top:18px;text-align:center;font-size:14px;">Already registered? <a routerLink="/login" style="color:var(--accent);">Log in</a></p>
+  </div>
+</div>
