@@ -1,0 +1,48 @@
+<div class="section" style="padding-top:40px;">
+  <div class="container" style="max-width:760px;">
+    <div class="eyebrow">Lease Desk</div>
+    <h2>Lease Agreement</h2>
+
+    <div *ngIf="notFound" class="card empty-state">
+      Lease not found. <a routerLink="/dashboard" style="color:var(--accent);">Back to Dashboard</a>.
+    </div>
+
+    <ng-container *ngIf="lease() as l">
+      <div class="strip" style="margin-bottom:18px;">
+        <div class="strip-top">
+          <div><div class="strip-code">{{ l.id }}</div><h3 style="margin:4px 0 0;">{{ l.bookingId }}</h3></div>
+          <div style="text-align:right;"><span class="badge-status" [ngClass]="statusClass(l.status)">{{ l.status }}</span></div>
+        </div>
+        <div class="strip-body">
+          <p style="margin:0;" *ngIf="l.signedBy">Signed by {{ l.signedBy }} on {{ fmtDate(l.signedDate) }}</p>
+          <div style="display:flex;gap:10px;margin-top:14px;flex-wrap:wrap;">
+            <button class="btn btn-primary btn-sm" *ngIf="l.status === 'Sent'" (click)="openSignModal()">Sign Agreement</button>
+            <button class="btn btn-ghost btn-sm" (click)="download()">Download</button>
+            <a routerLink="/dashboard" class="btn btn-ghost btn-sm">Back to Dashboard</a>
+          </div>
+        </div>
+        <div class="notch-r"></div>
+      </div>
+
+      <div class="card">
+        <h4>Agreement Text</h4>
+        <pre style="white-space:pre-wrap;font-family:var(--mono);font-size:12.5px;background:var(--surface-2);padding:16px;border-radius:8px;border:1px solid var(--border);">{{ contractText() }}</pre>
+      </div>
+    </ng-container>
+  </div>
+</div>
+
+<div *ngIf="signModalOpen" style="display:flex;position:fixed;inset:0;background:rgba(0,0,0,.6);align-items:center;justify-content:center;z-index:200;padding:20px;">
+  <div class="card" style="max-width:440px;width:100%;">
+    <h3>Digitally sign this agreement</h3>
+    <p>Type your full legal name to sign.</p>
+    <div class="field" style="margin-bottom:16px;">
+      <label>Full Legal Name</label>
+      <input type="text" [(ngModel)]="legalName" name="legalName">
+    </div>
+    <div style="display:flex;gap:10px;">
+      <button class="btn btn-ghost btn-block" (click)="closeSignModal()">Cancel</button>
+      <button class="btn btn-primary btn-block" [disabled]="submitting()" (click)="sign()">Sign Agreement</button>
+    </div>
+  </div>
+</div>

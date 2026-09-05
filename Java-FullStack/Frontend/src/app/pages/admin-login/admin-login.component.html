@@ -1,0 +1,22 @@
+<div class="auth-wrap">
+  <div class="auth-card card fade-in">
+    <div class="eyebrow">Restricted access</div>
+    <h2>Operations &amp; Admin Portal</h2>
+    <p>This console is for JetLease operations staff only. There is no public registration &mdash; accounts are provisioned internally.</p>
+
+    <form (ngSubmit)="submit()">
+      <div class="field" style="margin-bottom:14px;">
+        <label>Admin Email</label>
+        <input type="email" [(ngModel)]="email" name="email" required>
+      </div>
+      <div class="field" style="margin-bottom:18px;">
+        <label>Password</label>
+        <div class="otp-row">
+          <input [type]="showPassword ? 'text' : 'password'" [(ngModel)]="password" name="password" required>
+          <button type="button" class="btn btn-ghost btn-sm" (click)="showPassword = !showPassword">{{ showPassword ? 'Hide' : 'Show' }}</button>
+        </div>
+      </div>
+      <button class="btn btn-primary btn-block" type="submit" [disabled]="loading()">Enter Admin Console</button>
+    </form>
+  </div>
+</div>
