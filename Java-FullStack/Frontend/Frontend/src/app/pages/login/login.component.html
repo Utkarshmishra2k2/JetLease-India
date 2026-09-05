@@ -1,0 +1,80 @@
+<div class="auth-wrap">
+  <div class="auth-card card fade-in">
+    <div class="eyebrow">Welcome back</div>
+    <h2>Log in to JetLease</h2>
+
+    <div class="search-tabs" style="margin-bottom:20px;">
+      <button type="button" class="search-tab" [class.active]="mode() === 'email'" (click)="setMode('email')">Email</button>
+      <button type="button" class="search-tab" [class.active]="mode() === 'phone'" (click)="setMode('phone')">Phone</button>
+      <button type="button" class="search-tab" [class.active]="mode() === 'otp'" (click)="setMode('otp')">OTP</button>
+    </div>
+
+    <form (ngSubmit)="submit()">
+      <div *ngIf="mode() === 'email'">
+        <div class="field" style="margin-bottom:14px;">
+          <label>Email</label>
+          <input type="email" [(ngModel)]="loginEmail" name="loginEmail" placeholder="you@company.com">
+        </div>
+        <div class="field">
+          <label>Password</label>
+          <div class="otp-row">
+            <input [type]="showPassword ? 'text' : 'password'" [(ngModel)]="loginPassword" name="loginPassword" placeholder="Password">
+            <button type="button" class="btn btn-ghost btn-sm" (click)="togglePw('email')">{{ showPassword ? 'Hide' : 'Show' }}</button>
+          </div>
+        </div>
+      </div>
+
+      <div *ngIf="mode() === 'phone'">
+        <div class="field" style="margin-bottom:14px;">
+          <label>Phone</label>
+          <input type="tel" [(ngModel)]="loginPhone" name="loginPhone" pattern="[0-9]{10}" placeholder="10-digit mobile">
+        </div>
+        <div class="field">
+          <label>Password</label>
+          <div class="otp-row">
+            <input [type]="showPhonePassword ? 'text' : 'password'" [(ngModel)]="loginPhonePassword" name="loginPhonePassword">
+            <button type="button" class="btn btn-ghost btn-sm" (click)="togglePw('phone')">{{ showPhonePassword ? 'Hide' : 'Show' }}</button>
+          </div>
+        </div>
+      </div>
+
+      <div *ngIf="mode() === 'otp'">
+        <div class="field" style="margin-bottom:14px;">
+          <label>Email or Phone</label>
+          <div class="otp-row">
+            <input type="text" [(ngModel)]="otpIdentifier" name="otpIdentifier" placeholder="you@company.com">
+            <button type="button" class="btn btn-ghost btn-sm" (click)="sendLoginOtp()">Send OTP</button>
+          </div>
+        </div>
+        <div class="field">
+          <label>OTP Code</label>
+          <input type="text" [(ngModel)]="loginOtp" name="loginOtp" maxlength="6" placeholder="123456">
+        </div>
+      </div>
+
+      <div style="display:flex;justify-content:space-between;align-items:center;margin:16px 0;font-size:13px;">
+        <label style="display:flex;gap:8px;align-items:center;color:var(--text-dim);"></label>
+        <a href="#" (click)="openForgot(); $event.preventDefault()" style="color:var(--accent);">Forgot password?</a>
+      </div>
+
+      <button class="btn btn-primary btn-block" type="submit" [disabled]="loading()">Log In</button>
+    </form>
+
+    <p style="margin-top:18px;text-align:center;font-size:14px;">New to JetLease? <a routerLink="/register" style="color:var(--accent);">Create an account</a></p>
+  </div>
+</div>
+
+<div *ngIf="forgotOpen()" style="display:flex;position:fixed;inset:0;background:rgba(0,0,0,.6);align-items:center;justify-content:center;z-index:200;">
+  <div class="card" style="max-width:380px;width:90%;">
+    <h3>Reset your password</h3>
+    <p>Enter your account email and we'll send a mock reset link.</p>
+    <div class="field" style="margin-bottom:14px;">
+      <label>Email</label>
+      <input type="email" [(ngModel)]="forgotEmail" name="forgotEmail" [ngModelOptions]="{standalone: true}">
+    </div>
+    <div style="display:flex;gap:10px;">
+      <button class="btn btn-ghost btn-block" (click)="closeForgot()">Cancel</button>
+      <button class="btn btn-primary btn-block" (click)="requestPasswordReset()">Send Link</button>
+    </div>
+  </div>
+</div>
